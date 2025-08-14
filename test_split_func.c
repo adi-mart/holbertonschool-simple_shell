@@ -20,9 +20,32 @@ char *read_line(void)
 	return (line);
 }
 
+void execute_command(char *line)
+{
+	pid_t pid = fork();
+	char *args[2];
+	int status;
+
+	if (pid == 0)
+	{
+		args[0] = line;
+		args[1] = NULL;
+		execve(line, args, environ);
+		fprintf(stderr, "hsh: 1: %s: not found\n", line);
+		exit(127);
+	}
+	else if (pid > 0)
+		wait(&status);
+	else
+		perror("fork");
+}
+/**
+ * Ajouter une fonction char **parse_line(char *line)
+ */
+
 int main(int argc, char **argv)
 {
-	char *line;
+	char *line; // Changer *line par **args Task 3
 	(void)argc;
 	(void)argv;
 
@@ -35,6 +58,8 @@ int main(int argc, char **argv)
 			free(line);
 			exit(0);
 		}
+		execute_command(line);
+		free(line);
 	}
 	return (0);
 }
