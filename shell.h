@@ -9,6 +9,6 @@
 #include <sys/wait.h>
 
 extern char **environ;
-#define PROMPT "$ "
+#define PROMPT "($) "
 
 #endif
