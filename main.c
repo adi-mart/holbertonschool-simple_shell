@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
+#include <string.h>
 #include <sys/wait.h>
 #include "shell.h"
 /**
@@ -10,43 +9,50 @@
  *
  * Return: Always 0
  */
-int main(void)
+int main(int argc, char **argv)
 {
 	char *line = NULL;
-	size_t len = 0;
+	size_t size = 0;
 	ssize_t nread;
+	pid_t pid;
 	int status;
+	char *args[2];
+    (void)argc;
 
 	while (1)
 	{
 		printf(PROMPT);
-		nread = getline(&line, &len, stdin);
+
+		nread = getline(&line, &size, stdin);
 		if (nread == -1)
 		{
-			exit(EXIT_FAILURE);
+			if (line)
+				free(line);
+			exit(0);
 		}
+
 		if (line[nread - 1] == '\n')
 			line[nread - 1] = '\0';
-		if (line[0] == '\0')
-			continue;
-		pid_t pid = fork();
+		
+		if (strcmp(line, "exit") == 0)
+		{
+			free(line);
+			exit(0);
+		}
 
+		pid = fork();
 		if (pid == 0)
 		{
-			char *argv[2];
-
 			argv[0] = line;
 			argv[1] = NULL;
-
 			execve(line, argv, environ);
-			perror("./hsh");
-			exit(EXIT_FAILURE);
+			fprintf(stderr, "hsh: 1: %s: not found\n", line);
+			exit(127);
 		}
 		else if (pid > 0)
 			wait(&status);
 		else
 			perror("fork");
 	}
-	free(line);
 	return (0);
 }
