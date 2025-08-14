@@ -6,6 +6,8 @@
 #include "shell.h"
 /**
  * main - Entry point for the shell
+ * @argc: Number of command-line arguments
+ * @argv: Array of command-line argument strings
  *
  * Return: Always 0
  */
@@ -17,7 +19,8 @@ int main(int argc, char **argv)
 	pid_t pid;
 	int status;
 	char *args[2];
-    (void)argc;
+	(void)argc;
+	(void)argv;
 
 	while (1)
 	{
@@ -33,7 +36,7 @@ int main(int argc, char **argv)
 
 		if (line[nread - 1] == '\n')
 			line[nread - 1] = '\0';
-		
+
 		if (strcmp(line, "exit") == 0)
 		{
 			free(line);
