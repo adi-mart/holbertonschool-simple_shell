@@ -39,7 +39,7 @@ int main(void)
 			argv[1] = NULL;
 
 			execve(line, argv, environ);
-			perror("./shell");
+			perror("./hsh");
 			exit(EXIT_FAILURE);
 		}
 		else if (pid > 0)
