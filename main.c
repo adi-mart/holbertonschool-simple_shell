@@ -19,18 +19,16 @@ int main(void)
 
 	while (1)
 	{
-		if (isatty(STDIN_FILENO))
-			printf(PROMPT);
+		printf(PROMPT);
 		nread = getline(&line, &len, stdin);
 		if (nread == -1)
 		{
-			break;
+			exit(EXIT_FAILURE);
 		}
 		if (line[nread - 1] == '\n')
 			line[nread - 1] = '\0';
 		if (line[0] == '\0')
 			continue;
-
 		pid_t pid = fork();
 
 		if (pid == 0)
