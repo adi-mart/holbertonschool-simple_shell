@@ -1,5 +1,6 @@
 #ifndef SHELL_H
 #define SHELL_H
+#define PROMPT "$ "
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,9 +12,5 @@
 #include <errno.h>
 
 extern char **environ;
-
-#define PROMPT "$ "
-
-char *read_line(void);
 
 #endif
