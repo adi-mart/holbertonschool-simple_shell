@@ -1,47 +1,53 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include "shell.h"
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include "shell.h"
 /**
- * main - reads a line from standard input
- * @ac: argument count
- * @av: argument vector
+ * main - Entry point for the shell
+ *
  * Return: Always 0
  */
-int main(int ac, char **av)
-
+int main(void)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t nread;
+	int status;
 
 	while (1)
 	{
-        if (isatty(STDIN_FILENO))
-            printf(PROMPT);
+		if (isatty(STDIN_FILENO))
+			printf(PROMPT);
 		nread = getline(&line, &len, stdin);
-		if (nread == -1) 
-        {
-			perror("getline");
-			exit(EXIT_FAILURE);;
+		if (nread == -1)
+		{
+			break;
 		}
-        if (nread > 0 && line[nread - 1] == '\n')
-        {
-            line[nread - 1] = '\0';
-            continue;
-        }
-        if (nread == '\0')
-        {
-            continue;
-        }
-        if (nread == 1 && line[0] == ' ')
-        {
-            return (!NULL);
-            printf("./shell: No such file or directory");
-            continue;
-        }
-        
+		if (line[nread - 1] == '\n')
+			line[nread - 1] = '\0';
+		if (line[0] == '\0')
+			continue;
+
+		pid_t pid = fork();
+
+		if (pid == 0)
+		{
+			char *argv[2];
+
+			argv[0] = line;
+			argv[1] = NULL;
+
+			execve(line, argv, environ);
+			perror("./shell");
+			exit(EXIT_FAILURE);
+		}
+		else if (pid > 0)
+			wait(&status);
+		else
+			perror("fork");
 	}
 	free(line);
 	return (0);
