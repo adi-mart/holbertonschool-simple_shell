@@ -1,0 +1,100 @@
+.TH HSH 1 "August 2025" "Version 1.0" "User Commands"
+.SH NAME
+hsh \- simple shell, a basic UNIX command line interpreter
+.SH SYNOPSIS
+.B hsh
+.SH DESCRIPTION
+.B hsh
+is a simple UNIX command line interpreter that reads commands from either a file or standard input and executes them.
+.PP
+The shell is a command that reads lines from either a file or the terminal, interprets them, and generally executes other commands. It is the program that is running when a user logs into the system. The shell implements a language that has flow control constructs, a macro facility that provides a variety of features in addition to data storage, along with built in history and line editing capabilities.
+.SH INVOCATION
+.B hsh
+can be invoked both interactively and non-interactively. If
+.B hsh
+is invoked with standard input not connected to a terminal, it reads and executes commands from standard input. When invoked with standard input connected to a terminal, an interactive shell is started.
+.SH INTERACTIVE MODE
+When
+.B hsh
+is executed interactively, it displays the prompt
+.B "$ "
+when it is ready to read a command. The shell then reads a line from the terminal, parses it into a command and arguments, and executes the command.
+.SH NON-INTERACTIVE MODE
+When
+.B hsh
+is executed non-interactively, it reads commands from standard input and executes them in sequence.
+.SH COMMAND EXECUTION
+After receiving a command,
+.B hsh
+creates a child process to execute the command using
+.BR fork (2)
+and
+.BR execve (2).
+The parent process waits for the child to complete before reading the next command.
+.SH BUILT-IN COMMANDS
+The following commands are built into the shell:
+.TP
+.B exit
+Exit the shell.
+.SH EXIT STATUS
+.B hsh
+returns the exit status of the last command executed, or zero if no command is executed.
+.SH EXAMPLES
+.PP
+Interactive mode:
+.RS
+.nf
+$ ./hsh
+$ /bin/ls
+file1.txt  file2.txt  directory1
+$ /bin/pwd
+/home/user/current_directory
+$ exit
+$
+.fi
+.RE
+.PP
+Non-interactive mode:
+.RS
+.nf
+$ echo "/bin/ls" | ./hsh
+file1.txt  file2.txt  directory1
+$
+.fi
+.RE
+.SH ENVIRONMENT
+.B hsh
+inherits the environment from its parent process.
+.SH FILES
+.I ~/.hshrc
+.RS
+The individual per-interactive-shell startup file (not implemented)
+.RE
+.SH BUGS
+.B hsh
+does not support:
+.IP \(bu 2
+Command line arguments parsing
+.IP \(bu 2
+Pipes and redirections
+.IP \(bu 2
+Wildcards and globbing
+.IP \(bu 2
+Variable expansion
+.IP \(bu 2
+Command history
+.IP \(bu 2
+Tab completion
+.SH AUTHORS
+Aurelie Di Martino <aurelie.di-martino@holbertonstudents.com>
+.br
+Mickael Mur <mur.mickael@gmail.com>
+.br
+Developed as part of Holberton School curriculum.
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR execve (2),
+.BR fork (2),
+.BR wait (2),
+.BR getline (3)
