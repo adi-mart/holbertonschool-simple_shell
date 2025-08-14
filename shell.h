@@ -8,7 +8,12 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-extern char **environ;
 #define PROMPT "($) "
+
+extern char **environ;
+
+char *read_line(void);
+void execute_command(char *line);
+int is_exit_command(char *line);
 
 #endif
