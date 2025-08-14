@@ -1,6 +1,5 @@
 #ifndef SHELL_H
 #define SHELL_H
-#define PROMPT "($) "
 
 #include <stdio.h>
 #include <stdlib.h>
