@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 		}
 		if (line[nread - 1] == '\n')
 			line[nread - 1] = '\0';
-		if (line[0] == '\0')
+		if (line[0] == '\0' || line[0] == ' ' || line[0] == '\t')
 			continue;
 
 		if (strcmp(line, "exit") == 0)

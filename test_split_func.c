@@ -81,19 +81,11 @@ int main(int argc, char **argv)
 			free(line);
 			exit(0);
 		}
-		if (line[0] == '\0')
+		if (line[0] == '\0' || line[0] == ' ' || line[0] == '\t')
 		{
 			free(line);
 			continue;
 		}
-		/*
-		 * Ignore les symboles en utilisant les flèches
-		 * if (strncmp(line, "\033", 1) == 0)
-		 * {
-		 *     free(line);
-		 *     continue;
-		 * }
-		 */
 		execute_command(line);
 		free(line);
 	}
