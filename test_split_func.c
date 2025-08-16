@@ -1,10 +1,21 @@
 #include "shell.h"
 
+/**
+ * is_exit_command - Checks if the input command is "exit"
+ * @line: The input command line
+ *
+ * Return: 1 if command is "exit", 0 otherwise
+ */
 int is_exit_command(char *line)
 {
 	return (strcmp(line, "exit") == 0);
 }
 
+/**
+ * read_line - Reads a line from standard input
+ *
+ * Return: Pointer to the read line (must be freed by caller)
+ */
 char *read_line(void)
 {
 	char *line = NULL;
@@ -20,6 +31,12 @@ char *read_line(void)
 	return (line);
 }
 
+/**
+ * execute_command - Executes a command by creating a new process
+ * @line: The command to execute
+ *
+ * This function uses fork and execve to run the command.
+ */
 void execute_command(char *line)
 {
 	pid_t pid = fork();
@@ -39,13 +56,19 @@ void execute_command(char *line)
 	else
 		perror("fork");
 }
-/**
- * Ajouter une fonction char **parse_line(char *line)
- */
 
+/**
+ * main - Entry point for the test program
+ * @argc: Number of arguments
+ * @argv: Array of arguments
+ *
+ * Main loop reads and executes user commands. Type "exit" to quit.
+ *
+ * Return: 0 on success
+ */
 int main(int argc, char **argv)
 {
-	char *line; // Changer *line par **args Task 3
+	char *line;
 	(void)argc;
 	(void)argv;
 
@@ -63,6 +86,14 @@ int main(int argc, char **argv)
 			free(line);
 			continue;
 		}
+		/*
+		 * Ignore les symboles en utilisant les flèches
+		 * if (strncmp(line, "\033", 1) == 0)
+		 * {
+		 *     free(line);
+		 *     continue;
+		 * }
+		 */
 		execute_command(line);
 		free(line);
 	}
