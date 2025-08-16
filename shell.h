@@ -12,6 +12,7 @@
 
 extern char **environ;
 
+/* Function prototypes */
 char *read_line(void);
 void execute_command(char *line);
 int is_exit_command(char *line);
