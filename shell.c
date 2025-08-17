@@ -82,6 +82,7 @@ int execute_command(char *command)
 int main(void)
 {
 	char *line;
+	int i;
 
 	while (1)
 {
@@ -94,14 +95,16 @@ int main(void)
 			printf("\n");
 		break;
 	}
-
-	if (strlen(line) == 0 || strspn(line, " \t") == strlen(line))
+	i = 0;
+	while (line[i] == ' ' || line[i] == '\t')
+		i++;
+	if (line[i] == '\0')
 	{
 		free(line);
 		continue;
 	}
 
-	execute_command(line);
+	execute_command(line + i);
 	free(line);
 	}
 
