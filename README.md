@@ -1,99 +1,77 @@
 # Simple Shell
 
-A basic UNIX command line interpreter (shell) written in C.
+This project is a simple UNIX command line interpreter, created as part of the Holberton School curriculum. It is designed to replicate the basic functionality of the `sh` shell.
 
 ## Description
 
-This project is a simple implementation of a shell that can execute commands in interactive mode. It reads commands from the user, creates child processes to execute them, and handles basic shell operations.
+The simple shell is a command-line program that reads commands from the user and executes them. It operates in both interactive and non-interactive modes.
+
+*   **Interactive Mode:** When started with input from a terminal, the shell displays a prompt `($) ` and waits for the user to type a command.
+*   **Non-Interactive Mode:** When commands are piped into it, the shell executes them sequentially and exits.
 
 ## Features
 
-- Interactive command execution
-- Process creation and management using `fork()` and `execve()`
-- Built-in `exit` command
-- Error handling for invalid commands
-- Memory management for input handling
+*   Displays a prompt and reads user input.
+*   Executes commands with their arguments.
+*   Handles the `PATH` environment variable to find executables.
+*   Implements the `exit` built-in command to terminate the shell.
+*   Handles the end-of-file condition (`Ctrl+D`).
 
-## Compilation
+## Getting Started
 
-To compile the shell, use:
+### Prerequisites
+
+To compile and run this shell, you will need:
+*   GCC (GNU Compiler Collection)
+*   A standard UNIX-like environment
+
+### Compilation
+
+Clone the repository and compile the source files using the following command:
 
 ```bash
-gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
+gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
 
-## Usage
+This will create an executable file named `hsh`.
 
-### Interactive Mode
+### Usage
 
-Run the shell:
+#### Interactive Mode
+
+Start the shell by running the executable:
+
 ```bash
-./hsh
+$ ./hsh
+($) /bin/ls
+shell.c  shell.h  README.md  hsh
+($) exit
+$
 ```
 
-The shell will display a prompt and wait for user input:
-```
-$ ls
-$ pwd
-$ exit
-```
+#### Non-Interactive Mode
 
-### Non-Interactive Mode
+You can pipe commands into the shell:
 
-You can also pipe commands to the shell:
 ```bash
-echo "ls" | ./hsh
+$ echo "/bin/ls" | ./hsh
+shell.c  shell.h  README.md  hsh
+$
 ```
 
 ## Built-in Commands
 
-- `exit` - Exit the shell
+*   `exit`: Exits the shell.
 
-## Examples
+## Man Page
+
+A man page is available for more detailed information. To view it, use the following command:
 
 ```bash
-$ ./hsh
-$ /bin/ls
-file1.txt  file2.txt  directory1
-$ /bin/pwd
-/home/user/current_directory
-$ exit
+man ./man_1_simple_shell
 ```
-
-## File Structure
-
-- `main.c` - Main shell loop and command execution logic
-- `shell.h` - Header file with function prototypes and includes
-- `free.c` - Memory management functions (to be implemented)
-- `man_1_simple_shell` - Manual page for the shell
-
-## How It Works
-
-1. The shell displays a prompt to the user
-2. Reads a line of input using `getline()`
-3. Checks for the built-in `exit` command
-4. Creates a child process using `fork()`
-5. Executes the command using `execve()` in the child process
-6. Parent process waits for child completion
-7. Repeats the cycle
-
-## Error Handling
-
-- Commands not found display: `hsh: 1: [command]: not found`
-- Memory allocation errors are handled appropriately
-- EOF (Ctrl+D) exits the shell gracefully
-
-## Limitations
-
-- Currently only supports commands without arguments
-- No command parsing for complex arguments
-- Limited built-in commands
-- No support for pipes, redirections, or wildcards
 
 ## Authors
 
-- Project developed as part of Holberton School curriculum
-
-## License
-
-This project is for educational purposes.
+*   **Aurelie Di Martino** - <aurelie.di-martino@holbertonstudents.com>
+*   **Mickael Mur** - <mur.mickael@gmail.com>
