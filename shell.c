@@ -56,6 +56,12 @@ void execute_command(char *line, char *prog_name, int count)
 			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
 			exit(126);
 		}
+		else if (strchr(line, '/') != NULL)
+		{
+			fprintf(stderr, "%s: %d: %s: No such file or directory\n",
+				prog_name, count, line);
+			exit(2);
+		}
 		else
 		{
 			fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
