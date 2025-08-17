@@ -38,30 +38,28 @@ char *read_line(void)
 
 /**
  * execute_command - Executes a given command
- * @command: the command to execute
- * Return: 1 to continue, 0 to exit
+ * @line: the command to execute
+ * @prog_name: the name of the shell program
  */
-int execute_command(char *command)
+void execute_command(char *line, char *prog_name)
 {
 	pid_t pid;
 	int status;
-	char *argv[2];
+	char *args[2];
 
-	if (strlen(command) == 0)
-		return (1);
+	if (strlen(line) == 0)
+		return;
 
 	pid = fork();
 
 	if (pid == 0)
 	{
-		argv[0] = command;
-		argv[1] = NULL;
+		args[0] = line;
+		args[1] = NULL;
 
-		if (execve(command, argv, environ) == -1)
-		{
-			fprintf(stderr, "./shell: No such file or directory\n");
-			exit(127);
-		}
+		execve(line, args, environ);
+		fprintf(stderr, "%s: No such file or directory\n", prog_name);
+		exit(127);
 	}
 	else if (pid > 0)
 	{
@@ -71,41 +69,43 @@ int execute_command(char *command)
 	{
 		perror("fork");
 	}
-
-	return (1);
 }
 
 /**
  * main - Entry point of the simple shell
+ * @argc: Number of arguments (unused)
+ * @argv: Array of arguments
  * Return: 0 on success
  */
-int main(void)
+int main(int argc, char **argv)
 {
 	char *line;
 	int i;
+	(void)argc;
 
 	while (1)
-{
-	print_prompt();
-	line = read_line();
+	{
+		print_prompt();
+		line = read_line();
 
-	if (line == NULL)
-	{
-		if (isatty(STDIN_FILENO))
-			printf("\n");
-		break;
-	}
-	i = 0;
-	while (line[i] == ' ' || line[i] == '\t')
-		i++;
-	if (line[i] == '\0')
-	{
+		if (line == NULL)
+		{
+			if (isatty(STDIN_FILENO))
+				printf("\n");
+			break;
+		}
+
+		i = 0;
+		while (line[i] == ' ' || line[i] == '\t')
+			i++;
+		if (line[i] == '\0')
+		{
+			free(line);
+			continue;
+		}
+
+		execute_command(line + i, argv[0]);
 		free(line);
-		continue;
-	}
-
-	execute_command(line + i);
-	free(line);
 	}
 
 	return (0);
