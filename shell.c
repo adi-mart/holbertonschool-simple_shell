@@ -33,12 +33,12 @@ char *read_line(void)
 }
 
 /**
- * execute_command - Executes a command by creating a new process
- * @line: The command to execute
- * @prog_name: The name of the shell program
- * @count: The command count for error messages
+ * execute_command - Forks and executes a command
+ * @line: Command to execute
+ * @prog_name: Name of the shell program
+ * @count: Command count for error reporting
  *
- * This function uses fork and execve to run the command.
+ * Return: void
  */
 void execute_command(char *line, char *prog_name, int count)
 {
@@ -51,11 +51,6 @@ void execute_command(char *line, char *prog_name, int count)
 		args[0] = line;
 		args[1] = NULL;
 		execve(line, args, environ);
-		if (errno == EACCES)
-		{
-			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
-			exit(126);
-		}
 		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
 		exit(127);
 	}
@@ -66,14 +61,14 @@ void execute_command(char *line, char *prog_name, int count)
 }
 
 /**
- * main - Entry point for the shell program
- * @argc: Number of arguments (unused)
- * @argv: Array of arguments
+ * main - Entry point for the simple shell program
+ * @argc: Argument count
+ * @argv: Argument vector
+ *
  * Return: 0 on success
  */
 int main(int argc, char **argv)
 {
-	size_t len;
 	char *line;
 	int command_count = 0;
 	int i;
@@ -96,12 +91,6 @@ int main(int argc, char **argv)
 			free(line);
 			continue;
 		}
-		len = strlen(line);
-			while (len > 0 && (line[len - 1] == ' ' || line[len - 1] == '\t'))
-			{
-				line[len - 1] = '\0';
-				len--;
-			}
 		command_count++;
 		execute_command(line + i, argv[0], command_count);
 		free(line);
