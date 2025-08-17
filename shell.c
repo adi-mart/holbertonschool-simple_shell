@@ -83,6 +83,7 @@ int main(int argc, char **argv)
 {
 	char *line;
 	int i;
+	int len;
 	(void)argc;
 
 	while (1)
@@ -106,6 +107,12 @@ int main(int argc, char **argv)
 			continue;
 		}
 
+		len = strlen(line);
+		while (len > i && (line[len - 1] == ' ' || line[len - 1] == '\t'))
+		{
+			line[len - 1] = '\0';
+			len--;
+		}
 		execute_command(line + i, argv[0]);
 		free(line);
 	}
