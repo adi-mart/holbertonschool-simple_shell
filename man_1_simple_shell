@@ -1,100 +1,110 @@
-.TH HSH 1 "August 2025" "Version 1.0" "User Commands"
+.\" Man page for simple_shell
+.TH SIMPLE_SHELL 1 "17 August 2025" "1.0" "simple_shell manual"
+
 .SH NAME
-hsh \- simple shell, a basic UNIX command line interpreter
+simple_shell \- un interpréteur de commandes simple
+
 .SH SYNOPSIS
-.B hsh
+.B ./hsh
+.br
+.B echo "commande" | ./hsh
+
 .SH DESCRIPTION
-.B hsh
-is a simple UNIX command line interpreter that reads commands from either a file or standard input and executes them.
-.PP
-The shell is a command that reads lines from either a file or the terminal, interprets them, and generally executes other commands. It is the program that is running when a user logs into the system. The shell implements a language that has flow control constructs, a macro facility that provides a variety of features in addition to data storage, along with built in history and line editing capabilities.
-.SH INVOCATION
-.B hsh
-can be invoked both interactively and non-interactively. If
-.B hsh
-is invoked with standard input not connected to a terminal, it reads and executes commands from standard input. When invoked with standard input connected to a terminal, an interactive shell is started.
-.SH INTERACTIVE MODE
-When
-.B hsh
-is executed interactively, it displays the prompt
-.B "$ "
-when it is ready to read a command. The shell then reads a line from the terminal, parses it into a command and arguments, and executes the command.
-.SH NON-INTERACTIVE MODE
-When
-.B hsh
-is executed non-interactively, it reads commands from standard input and executes them in sequence.
-.SH COMMAND EXECUTION
-After receiving a command,
-.B hsh
-creates a child process to execute the command using
-.BR fork (2)
-and
-.BR execve (2).
-The parent process waits for the child to complete before reading the next command.
-.SH BUILT-IN COMMANDS
-The following commands are built into the shell:
+.B simple_shell
+est un interpréteur de commandes simple écrit en C. Il peut fonctionner en mode interactif ou non-interactif et exécute des commandes en utilisant leur chemin absolu.
+
+En mode interactif, le shell affiche un prompt 
+.B ($) 
+et attend que l'utilisateur saisisse une commande. En mode non-interactif, le shell lit les commandes depuis l'entrée standard.
+
+.SH OPTIONS
+Aucune option n'est supportée.
+
+.SH COMMANDES INTÉGRÉES
 .TP
 .B exit
-Exit the shell.
-.SH EXIT STATUS
-.B hsh
-returns the exit status of the last command executed, or zero if no command is executed.
-.SH EXAMPLES
-.PP
-Interactive mode:
-.RS
-.nf
+Quitte le shell avec un statut de sortie 0.
+
+.SH FONCTIONNEMENT
+Le shell lit une ligne depuis l'entrée standard, vérifie si c'est la commande 
+.B exit
+, et si ce n'est pas le cas, tente d'exécuter la commande en utilisant 
+.BR fork (2)
+et 
+.BR execve (2).
+
+Les commandes doivent être spécifiées avec leur chemin absolu (par exemple 
+.B /bin/ls
+au lieu de simplement 
+.B ls
+).
+
+.SH GESTION DES ERREURS
+Si une commande n'est pas trouvée, le shell affiche un message d'erreur au format :
+.br
+.B nom_programme: numéro_commande: commande: not found
+
+Le shell retourne le statut de sortie 127 pour les commandes non trouvées.
+
+.SH EXEMPLES
+Mode interactif :
+.EX
 $ ./hsh
-$ /bin/ls
-file1.txt  file2.txt  directory1
-$ /bin/pwd
-/home/user/current_directory
-$ exit
+($) /bin/ls
+shell.c shell.h README.md
+($) /bin/pwd
+/home/user/simple_shell
+($) exit
 $
-.fi
-.RE
-.PP
-Non-interactive mode:
-.RS
-.nf
+.EE
+
+Mode non-interactif :
+.EX
 $ echo "/bin/ls" | ./hsh
-file1.txt  file2.txt  directory1
+shell.c shell.h README.md
+$ echo "exit" | ./hsh
 $
-.fi
-.RE
-.SH ENVIRONMENT
-.B hsh
-inherits the environment from its parent process.
-.SH FILES
-.I ~/.hshrc
-.RS
-The individual per-interactive-shell startup file (not implemented)
-.RE
+.EE
+
+.SH CODES DE SORTIE
+.TP
+.B 0
+Succès
+.TP
+.B 127
+Commande non trouvée
+
+.SH ENVIRONNEMENT
+Le shell utilise la variable d'environnement 
+.B environ
+pour passer l'environnement aux commandes exécutées.
+
+.SH FICHIERS
+.TP
+.B ./hsh
+L'exécutable du shell
+
 .SH BUGS
-.B hsh
-does not support:
-.IP \(bu 2
-Command line arguments parsing
-.IP \(bu 2
-Pipes and redirections
-.IP \(bu 2
-Wildcards and globbing
-.IP \(bu 2
-Variable expansion
-.IP \(bu 2
-Command history
-.IP \(bu 2
-Tab completion
-.SH AUTHORS
+Le shell ne supporte pas :
+.br
+\- Les variables d'environnement dans les commandes
+.br
+\- Les pipes et redirections
+.br
+\- L'expansion des chemins (PATH)
+.br
+\- Les commandes composées
+.br
+\- L'historique des commandes
+
+.SH AUTEURS
 Aurelie Di Martino <aurelie.di-martino@holbertonstudents.com>
 .br
 Mickael Mur <mur.mickael@gmail.com>
-.br
-Developed as part of Holberton School curriculum.
-.SH SEE ALSO
+
+.SH VOIR AUSSI
 .BR sh (1),
 .BR bash (1),
 .BR execve (2),
 .BR fork (2),
-.BR wait (2),
-.BR getline (3)
+.BR waitpid (2)

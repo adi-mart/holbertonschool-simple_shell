@@ -1,77 +1,103 @@
 # Simple Shell
 
-This project is a simple UNIX command line interpreter, created as part of the Holberton School curriculum. It is designed to replicate the basic functionality of the `sh` shell.
-
 ## Description
 
-The simple shell is a command-line program that reads commands from the user and executes them. It operates in both interactive and non-interactive modes.
+Ce projet implémente un shell simple en langage C dans le cadre de la formation Holberton School. Ce shell peut interpréter et exécuter des commandes de base en mode interactif et non-interactif.
 
-*   **Interactive Mode:** When started with input from a terminal, the shell displays a prompt `($) ` and waits for the user to type a command.
-*   **Non-Interactive Mode:** When commands are piped into it, the shell executes them sequentially and exits.
+## Fonctionnalités
 
-## Features
+- Mode interactif avec prompt `($) `
+- Mode non-interactif (exécution via pipe)
+- Exécution de commandes avec chemin absolu
+- Commande intégrée `exit` pour quitter le shell
+- Gestion des erreurs et messages d'erreur appropriés
+- Gestion des lignes vides et espaces
 
-*   Displays a prompt and reads user input.
-*   Executes commands with their arguments.
-*   Handles the `PATH` environment variable to find executables.
-*   Implements the `exit` built-in command to terminate the shell.
-*   Handles the end-of-file condition (`Ctrl+D`).
+## Compilation
 
-## Getting Started
-
-### Prerequisites
-
-To compile and run this shell, you will need:
-*   GCC (GNU Compiler Collection)
-*   A standard UNIX-like environment
-
-### Compilation
-
-Clone the repository and compile the source files using the following command:
+Pour compiler le shell, utilisez la commande suivante :
 
 ```bash
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
 
-This will create an executable file named `hsh`.
+## Utilisation
 
-### Usage
+### Mode interactif
 
-#### Interactive Mode
+Lancez le shell en mode interactif :
 
-Start the shell by running the executable:
+```bash
+./hsh
+```
+
+Le shell affichera un prompt `($) ` et attendra vos commandes.
+
+### Mode non-interactif
+
+Vous pouvez également utiliser le shell en mode non-interactif :
+
+```bash
+echo "/bin/ls" | ./hsh
+```
+
+ou
+
+```bash
+echo "exit" | ./hsh
+```
+
+## Commandes supportées
+
+### Commandes intégrées
+
+- `exit` : Quitte le shell
+
+### Commandes externes
+
+Le shell peut exécuter toute commande en spécifiant le chemin absolu :
+
+- `/bin/ls`
+- `/bin/pwd`
+- `/usr/bin/whoami`
+- etc.
+
+## Exemples d'utilisation
 
 ```bash
 $ ./hsh
 ($) /bin/ls
-shell.c  shell.h  README.md  hsh
+AUTHORS  README.md  hsh  man_1_simple_shell  shell.c  shell.h
+($) /bin/pwd
+/home/user/holbertonschool-simple_shell
 ($) exit
 $
 ```
 
-#### Non-Interactive Mode
+## Gestion des erreurs
 
-You can pipe commands into the shell:
+Le shell gère les erreurs suivantes :
 
-```bash
-$ echo "/bin/ls" | ./hsh
-shell.c  shell.h  README.md  hsh
-$
+- Commandes non trouvées : affiche un message d'erreur avec le nom du programme, le numéro de commande et le nom de la commande
+- Erreurs de fork() : affiche un message d'erreur système
+- Fin de fichier (EOF) : quitte proprement le shell
+
+## Structure du projet
+
+```
+.
+├── AUTHORS          # Liste des contributeurs
+├── README.md        # Ce fichier
+├── man_1_simple_shell # Page de manuel
+├── shell.c          # Code source principal
+├── shell.h          # Fichier d'en-tête
+└── hsh              # Exécutable compilé
 ```
 
-## Built-in Commands
+## Auteurs
 
-*   `exit`: Exits the shell.
+Voir le fichier `AUTHORS` pour la liste complète des contributeurs.
 
-## Man Page
+## Licence
 
-A man page is available for more detailed information. To view it, use the following command:
-
-```bash
-man ./man_1_simple_shell
-```
-
-## Authors
-
-*   **Aurelie Di Martino** - <aurelie.di-martino@holbertonstudents.com>
-*   **Mickael Mur** - <mur.mickael@gmail.com>
+Ce projet est réalisé dans le cadre de la formation Holberton School.
