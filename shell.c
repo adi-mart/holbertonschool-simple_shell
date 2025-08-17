@@ -60,7 +60,7 @@ void execute_command(char *line, char *prog_name, int count)
 		{
 			fprintf(stderr, "%s: %d: %s: No such file or directory\n",
 				prog_name, count, line);
-			exit(2);
+			exit(127);
 		}
 		else
 		{
@@ -84,21 +84,28 @@ int main(int argc, char **argv)
 {
 	char *line;
 	int command_count = 0;
+	int i;
 	(void)argc;
 
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
+		{
 			printf("($) ");
+			fflush(stdout);
+		}
 		line = read_line();
 
-		if (line[0] == '\0' || line[0] == ' ' || line[0] == '\t')
+		i = 0;
+		while (line[i] == ' ' || line[i] == '\t')
+			i++;
+		if (line[i] == '\0')
 		{
 			free(line);
 			continue;
 		}
 		command_count++;
-		execute_command(line, argv[0], command_count);
+		execute_command(line + i, argv[0], command_count);
 		free(line);
 	}
 	return (0);
