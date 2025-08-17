@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <errno.h>
 
 /**
  * read_line - Reads a line from standard input
@@ -51,8 +52,16 @@ void execute_command(char *line, char *prog_name, int count)
 		args[0] = line;
 		args[1] = NULL;
 		execve(line, args, environ);
-		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
-		exit(127);
+		if (errno == EACCES)
+		{
+			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
+			exit(126);
+		}
+		else
+		{
+			fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
+			exit(127);
+		}
 	}
 	else if (pid > 0)
 		waitpid(pid, &status, 0);
