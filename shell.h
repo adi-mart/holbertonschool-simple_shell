@@ -8,7 +8,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define PROMPT "#cisfun$ "
+#define PROMPT "($) "
 
 extern char **environ;
 
