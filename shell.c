@@ -36,7 +36,7 @@ char *read_line(void)
  * execute_command - Executes a command by creating a new process
  * @line: The command to execute
  * @prog_name: The name of the shell program
- * @count: The command count (unused)
+ * @count: The command count for error messages
  *
  * This function uses fork and execve to run the command.
  */
@@ -45,14 +45,13 @@ void execute_command(char *line, char *prog_name, int count)
 	pid_t pid = fork();
 	char *args[2];
 	int status;
-	(void)count;
 
 	if (pid == 0)
 	{
 		args[0] = line;
 		args[1] = NULL;
 		execve(line, args, environ);
-		fprintf(stderr, "%s: No such file or directory\n", prog_name);
+		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
 		exit(127);
 	}
 	else if (pid > 0)
@@ -76,7 +75,7 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			printf(PROMPT);
+			printf("($) ");
 		line = read_line();
 
 		if (line[0] == '\0' || line[0] == ' ' || line[0] == '\t')
