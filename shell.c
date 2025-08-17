@@ -51,6 +51,11 @@ void execute_command(char *line, char *prog_name, int count)
 		args[0] = line;
 		args[1] = NULL;
 		execve(line, args, environ);
+		if (errno == EACCES)
+		{
+			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
+			exit(126);
+		}
 		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
 		exit(127);
 	}
@@ -68,6 +73,7 @@ void execute_command(char *line, char *prog_name, int count)
  */
 int main(int argc, char **argv)
 {
+	size_t len;
 	char *line;
 	int command_count = 0;
 	int i;
@@ -90,6 +96,12 @@ int main(int argc, char **argv)
 			free(line);
 			continue;
 		}
+		len = strlen(line);
+			while (len > 0 && (line[len - 1] == ' ' || line[len - 1] == '\t'))
+			{
+				line[len - 1] = '\0';
+				len--;
+			}
 		command_count++;
 		execute_command(line + i, argv[0], command_count);
 		free(line);
