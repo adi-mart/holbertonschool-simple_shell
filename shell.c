@@ -47,27 +47,29 @@ void execute_command(char *line, char *prog_name)
 	int status;
 	char *args[2];
 
-	if (strlen(line) == 0)
+	if (!line || strlen(line) == 0)
 		return;
+
+	args[0] = line;
+	args[1] = NULL;
 
 	pid = fork();
 
-	if (pid == 0)
+	if (pid == -1)
 	{
-		args[0] = line;
-		args[1] = NULL;
-
-		execve(line, args, environ);
-		fprintf(stderr, "%s: No such file or directory\n", prog_name);
-		exit(127);
+		perror("fork");
+		return;
 	}
-	else if (pid > 0)
+	else if (pid == 0)
 	{
-		wait(&status);
+		execve(line, args, NULL);
+		fprintf(stderr, "%s: command not found\n", prog_name);
+		exit(127);
 	}
 	else
 	{
-		perror("fork");
+		if (wait(&status) == -1)
+			perror("wait");
 	}
 }
 
