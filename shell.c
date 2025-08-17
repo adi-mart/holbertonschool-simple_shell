@@ -1,5 +1,4 @@
 #include "shell.h"
-#include <errno.h>
 
 /**
  * read_line - Reads a line from standard input
