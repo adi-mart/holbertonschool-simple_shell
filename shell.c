@@ -1,9 +1,20 @@
 #include "shell.h"
 
 /**
- * read_line - Reads a line from standard input
- *
- * Return: Pointer to the read line (must be freed by caller)
+ * print_prompt - Displays the shell prompt
+ */
+void print_prompt(void)
+{
+	if (isatty(STDIN_FILENO))
+	{
+		printf("#cisfun$ ");
+		fflush(stdout);
+	}
+}
+
+/**
+ * read_line - Reads a line from stdin
+ * Return: pointer to the read string, or NULL if EOF
  */
 char *read_line(void)
 {
@@ -14,86 +25,84 @@ char *read_line(void)
 	nread = getline(&line, &size, stdin);
 	if (nread == -1)
 	{
-		free(line);
-		if (feof(stdin))
-		{
-			if (isatty(STDIN_FILENO))
-				printf("\n");
-			exit(EXIT_SUCCESS);
-		}
-		else
-		{
-			perror("read_line");
-			exit(EXIT_FAILURE);
-		}
+		if (line)
+			free(line);
+		return (NULL);
 	}
-	if (nread > 0 && line[nread - 1] == '\n')
+
+	if (line[nread - 1] == '\n')
 		line[nread - 1] = '\0';
+
 	return (line);
 }
 
 /**
- * execute_command - Forks and executes a command
- * @line: Command to execute
- * @prog_name: Name of the shell program
- * @count: Command count for error reporting
- *
- * Return: void
+ * execute_command - Executes a given command
+ * @command: the command to execute
+ * Return: 1 to continue, 0 to exit
  */
-void execute_command(char *line, char *prog_name, int count)
+int execute_command(char *command)
 {
-	pid_t pid = fork();
-	char *args[2];
+	pid_t pid;
 	int status;
+	char *argv[2];
+
+	if (strlen(command) == 0)
+		return (1);
+
+	pid = fork();
 
 	if (pid == 0)
 	{
-		args[0] = line;
-		args[1] = NULL;
-		execve(line, args, environ);
-		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
-		exit(127);
+		argv[0] = command;
+		argv[1] = NULL;
+
+		if (execve(command, argv, environ) == -1)
+		{
+			if (isatty(STDIN_FILENO))
+				fprintf(stderr, "./shell: No such file or directory\n");
+			else
+				fprintf(stderr, "./shell: No such file or directory\n");
+			exit(127);
+		}
 	}
 	else if (pid > 0)
-		waitpid(pid, &status, 0);
+	{
+		wait(&status);
+	}
 	else
+	{
 		perror("fork");
+	}
+
+	return (1);
 }
 
 /**
- * main - Entry point for the simple shell program
- * @argc: Argument count
- * @argv: Argument vector
- *
+ * main - Entry point of the simple shell
  * Return: 0 on success
  */
-int main(int argc, char **argv)
+int main(void)
 {
 	char *line;
-	int command_count = 0;
-	int i;
-	(void)argc;
+	int should_continue = 1;
 
-	while (1)
+	while (should_continue)
 	{
-		if (isatty(STDIN_FILENO))
-		{
-			printf("($) ");
-			fflush(stdout);
-		}
+		print_prompt();
 		line = read_line();
 
-		i = 0;
-		while (line[i] == ' ' || line[i] == '\t')
-			i++;
-		if (line[i] == '\0')
+		if (line == NULL)
 		{
-			free(line);
-			continue;
+			if (isatty(STDIN_FILENO))
+				printf("\n");
+			break;
 		}
-		command_count++;
-		execute_command(line + i, argv[0], command_count);
+
+		should_continue = execute_command(line);
+
 		free(line);
 	}
+
 	return (0);
 }
