@@ -59,10 +59,7 @@ int execute_command(char *command)
 
 		if (execve(command, argv, environ) == -1)
 		{
-			if (isatty(STDIN_FILENO))
-				fprintf(stderr, "./shell: No such file or directory\n");
-			else
-				fprintf(stderr, "./shell: No such file or directory\n");
+			fprintf(stderr, "./shell: No such file or directory\n");
 			exit(127);
 		}
 	}
@@ -85,23 +82,27 @@ int execute_command(char *command)
 int main(void)
 {
 	char *line;
-	int should_continue = 1;
 
-	while (should_continue)
+	while (1)
+{
+	print_prompt();
+	line = read_line();
+
+	if (line == NULL)
 	{
-		print_prompt();
-		line = read_line();
+		if (isatty(STDIN_FILENO))
+			printf("\n");
+		break;
+	}
 
-		if (line == NULL)
-		{
-			if (isatty(STDIN_FILENO))
-				printf("\n");
-			break;
-		}
-
-		should_continue = execute_command(line);
-
+	if (strlen(line) == 0 || strspn(line, " \t") == strlen(line))
+	{
 		free(line);
+		continue;
+	}
+
+	execute_command(line);
+	free(line);
 	}
 
 	return (0);
