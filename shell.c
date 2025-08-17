@@ -36,7 +36,7 @@ char *read_line(void)
  * execute_command - Executes a command by creating a new process
  * @line: The command to execute
  * @prog_name: The name of the shell program
- * @count: The command count
+ * @count: The command count (unused)
  *
  * This function uses fork and execve to run the command.
  */
@@ -45,13 +45,14 @@ void execute_command(char *line, char *prog_name, int count)
 	pid_t pid = fork();
 	char *args[2];
 	int status;
+	(void)count;
 
 	if (pid == 0)
 	{
 		args[0] = line;
 		args[1] = NULL;
 		execve(line, args, environ);
-		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
+		fprintf(stderr, "%s: No such file or directory\n", prog_name);
 		exit(127);
 	}
 	else if (pid > 0)
@@ -61,24 +62,8 @@ void execute_command(char *line, char *prog_name, int count)
 }
 
 /**
- * is_exit_command - Checks if the command is "exit"
- * @line: The command to check
- *
- * Return: 1 if the command is "exit", 0 otherwise
- */
-int is_exit_command(char *line)
-{
-	if (strcmp(line, "exit") == 0)
-	{
-		return (1);
-	}
-	return (0);
-}
-
-
-/**
  * main - Entry point for the shell program
- * @argc: Number of arguments
+ * @argc: Number of arguments (unused)
  * @argv: Array of arguments
  * Return: 0 on success
  */
@@ -90,22 +75,16 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
-		command_count++;
 		if (isatty(STDIN_FILENO))
 			printf(PROMPT);
 		line = read_line();
-
-		if (is_exit_command(line))
-		{
-			free(line);
-			exit(EXIT_SUCCESS);
-		}
 
 		if (line[0] == '\0' || line[0] == ' ' || line[0] == '\t')
 		{
 			free(line);
 			continue;
 		}
+		command_count++;
 		execute_command(line, argv[0], command_count);
 		free(line);
 	}
