@@ -51,22 +51,8 @@ void execute_command(char *line, char *prog_name, int count)
 		args[0] = line;
 		args[1] = NULL;
 		execve(line, args, environ);
-		if (errno == EACCES)
-		{
-			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
-			exit(126);
-		}
-		else if (strchr(line, '/') != NULL)
-		{
-			fprintf(stderr, "%s: %d: %s: No such file or directory\n",
-				prog_name, count, line);
-			exit(127);
-		}
-		else
-		{
-			fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
-			exit(127);
-		}
+		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
+		exit(127);
 	}
 	else if (pid > 0)
 		waitpid(pid, &status, 0);
