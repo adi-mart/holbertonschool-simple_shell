@@ -40,8 +40,9 @@ char *read_line(void)
  * execute_command - Executes a given command
  * @line: the command to execute
  * @prog_name: the name of the shell program
+ * @count: The command count for error messages
  */
-void execute_command(char *line, char *prog_name)
+void execute_command(char *line, char *prog_name, int count)
 {
 	pid_t pid;
 	int status;
@@ -62,8 +63,8 @@ void execute_command(char *line, char *prog_name)
 	}
 	else if (pid == 0)
 	{
-		execve(line, args, NULL);
-		fprintf(stderr, "%s: command not found\n", prog_name);
+		execve(line, args, environ);
+			   fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
 		exit(127);
 	}
 	else
@@ -83,6 +84,7 @@ int main(int argc, char **argv)
 {
 	char *line;
 	int i;
+	int command_count = 1;
 	int len;
 	(void)argc;
 
@@ -113,7 +115,7 @@ int main(int argc, char **argv)
 			line[len - 1] = '\0';
 			len--;
 		}
-		execute_command(line + i, argv[0]);
+		execute_command(line + i, argv[0], command_count);
 		free(line);
 	}
 
