@@ -45,28 +45,42 @@ char *read_line(void)
 int main(int argc, char **argv)
 {
 	char *line;
-	/* Unused argument */
+	int i;
+	int command_count = 1;
+	int len;
 	(void)argc;
 
 	while (1)
 	{
 		print_prompt();
 		line = read_line();
-		/* Handle EOF (Ctrl+D) */
+		if (is_exit_command(line))
+		{
+			free(line);
+			exit(0);
+		}
 		if (line == NULL)
 		{
 			if (isatty(STDIN_FILENO))
 				printf("\n");
 			break;
 		}
-		/* Handle empty line */
-		if (strlen(line) == 0)
+		i = 0;
+		while (line[i] == ' ' || line[i] == '\t')
+			i++;
+		if (line[i] == '\0')
 		{
 			free(line);
 			continue;
 		}
-		/* Pass program name for error messages */
-		execute_command(line, argv[0]);
+
+		len = strlen(line);
+		while (len > i && (line[len - 1] == ' ' || line[len - 1] == '\t'))
+		{
+			line[len - 1] = '\0';
+			len--;
+		}
+		execute_command(line + i, argv[0], command_count);
 		free(line);
 	}
 	return (0);

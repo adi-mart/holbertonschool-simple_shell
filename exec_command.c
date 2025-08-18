@@ -1,16 +1,15 @@
-#include "shell.h"
-#include <string.h>
-
+#include "shell.c"
 /**
  * execute_command - Executes a given command
  * @line: the command to execute
  * @prog_name: the name of the shell program
+ * @count: The command count for error messages
  */
-void execute_command(char *line, char *prog_name)
+void execute_command(char *line, char *prog_name, int count)
 {
 	pid_t pid;
 	int status;
-	char *args[2]; /* Only command and NULL */
+	char *args[2];
 
 	if (!line || strlen(line) == 0)
 		return;
@@ -27,16 +26,21 @@ void execute_command(char *line, char *prog_name)
 	}
 	else if (pid == 0)
 	{
-		execve(args[0], args, environ);
-		/* If execve returns, it means an error occurred */
+		execve(line, args, environ);
 		if (errno == EACCES)
 		{
-			fprintf(stderr, "%s: %s: Permission denied\n", prog_name, args[0]);
+			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
 			exit(126);
 		}
-		else /* Command not found or other error */
+		else if (strchr(line, '/') != NULL)
 		{
-			fprintf(stderr, "%s: %s: not found\n", prog_name, args[0]);
+			fprintf(stderr, "%s: %d: %s: No such file or directory\n",
+				prog_name, count, line);
+			exit(2);
+		}
+		else
+		{
+			fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
 			exit(127);
 		}
 	}
