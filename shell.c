@@ -77,6 +77,7 @@ int main(int argc, char **argv)
 			len--;
 		}
 		execute_command(line + i, argv[0], command_count);
+		command_count++;
 		free(line);
 	}
 	return (0);

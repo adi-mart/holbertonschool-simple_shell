@@ -27,9 +27,21 @@ void execute_command(char *line, char *prog_name, int count)
 	else if (pid == 0)
 	{
 		/* Processus enfant */
-		if (execve(line, args, environ) == -1)
+		execve(line, args, environ);
+		/* Si on arrive ici, execve a échoué */
+		if (errno == EACCES)
 		{
-			/* execve a échoué */
+			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
+			exit(126);
+		}
+		else if (strchr(line, '/') != NULL)
+		{
+			fprintf(stderr, "%s: %d: %s: No such file or directory\n",
+				prog_name, count, line);
+			exit(2);
+		}
+		else
+		{
 			fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
 			exit(127);
 		}
@@ -37,6 +49,7 @@ void execute_command(char *line, char *prog_name, int count)
 	else
 	{
 		/* Processus parent */
-		wait(&status);
+		if (wait(&status) == -1)
+			perror("wait");
 	}
 }
