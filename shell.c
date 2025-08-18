@@ -37,58 +37,6 @@ char *read_line(void)
 }
 
 /**
- * execute_command - Executes a given command
- * @line: the command to execute
- * @prog_name: the name of the shell program
- * @count: The command count for error messages
- */
-void execute_command(char *line, char *prog_name, int count)
-{
-	pid_t pid;
-	int status;
-	char *args[2];
-
-	if (!line || strlen(line) == 0)
-		return;
-
-	args[0] = line;
-	args[1] = NULL;
-
-	pid = fork();
-
-	if (pid == -1)
-	{
-		perror("fork");
-		return;
-	}
-	else if (pid == 0)
-	{
-		execve(line, args, environ);
-		if (errno == EACCES)
-		{
-			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
-			exit(126);
-		}
-		else if (strchr(line, '/') != NULL)
-		{
-			fprintf(stderr, "%s: %d: %s: No such file or directory\n",
-				prog_name, count, line);
-			exit(2);
-		}
-		else
-		{
-			fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
-			exit(127);
-		}
-	}
-	else
-	{
-		if (wait(&status) == -1)
-			perror("wait");
-	}
-}
-
-/**
  * main - Entry point of the simple shell
  * @argc: Number of arguments (unused)
  * @argv: Array of arguments
@@ -106,14 +54,17 @@ int main(int argc, char **argv)
 	{
 		print_prompt();
 		line = read_line();
-
+		if (is_exit_command(line))
+		{
+			free(line);
+			exit(0);
+		}
 		if (line == NULL)
 		{
 			if (isatty(STDIN_FILENO))
 				printf("\n");
 			break;
 		}
-
 		i = 0;
 		while (line[i] == ' ' || line[i] == '\t')
 			i++;
@@ -132,6 +83,5 @@ int main(int argc, char **argv)
 		execute_command(line + i, argv[0], command_count);
 		free(line);
 	}
-
 	return (0);
 }
