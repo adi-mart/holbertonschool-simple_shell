@@ -49,7 +49,7 @@ void execute_command(char *line, char *prog_name, int count)
 	else
 	{
 		/* Processus parent */
-		if (wait(&status) == -1)
-			perror("wait");
+		if (waitpid(pid, &status, 0) == -1)
+			perror("waitpid");
 	}
 }
