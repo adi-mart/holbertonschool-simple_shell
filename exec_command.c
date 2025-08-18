@@ -1,4 +1,4 @@
-#include "shell.c"
+#include "shell.h"
 /**
  * execute_command - Executes a given command
  * @line: the command to execute
@@ -26,27 +26,17 @@ void execute_command(char *line, char *prog_name, int count)
 	}
 	else if (pid == 0)
 	{
-		execve(line, args, environ);
-		if (errno == EACCES)
+		/* Processus enfant */
+		if (execve(line, args, environ) == -1)
 		{
-			fprintf(stderr, "%s: %d: %s: Permission denied\n", prog_name, count, line);
-			exit(126);
-		}
-		else if (strchr(line, '/') != NULL)
-		{
-			fprintf(stderr, "%s: %d: %s: No such file or directory\n",
-				prog_name, count, line);
-			exit(2);
-		}
-		else
-		{
+			/* execve a échoué */
 			fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, line);
 			exit(127);
 		}
 	}
 	else
 	{
-		if (wait(&status) == -1)
-			perror("wait");
+		/* Processus parent */
+		wait(&status);
 	}
 }
