@@ -54,11 +54,7 @@ int main(int argc, char **argv)
 	{
 		print_prompt();
 		line = read_line();
-		if (is_exit_command(line))
-		{
-			free(line);
-			exit(0);
-		}
+
 		if (line == NULL)
 		{
 			if (isatty(STDIN_FILENO))
