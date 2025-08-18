@@ -30,7 +30,7 @@ char *read_line(void)
 		return (NULL);
 	}
 
-	if (line[nread - 1] == '\n')
+	if (nread > 0 && line[nread - 1] == '\n')
 		line[nread - 1] = '\0';
 
 	return (line);
