@@ -1,6 +1,20 @@
 #include "shell.h"
 
 /**
+ * handle_builtin_commands - Handle built-in commands like exit
+ * @args: Array of command arguments
+ * Return: 1 if command was handled, 0 otherwise
+ */
+int handle_builtin_commands(char **args)
+{
+	if (strcmp(args[0], "exit") == 0)
+	{
+		exit(0);
+	}
+	return (0);
+}
+
+/**
  * handle_execve_error - Handles execve errors and exits with appropriate code
  * @prog_name: the name of the shell program
  * @count: The command count for error messages
@@ -49,6 +63,10 @@ void execute_command(char **args, char *prog_name, int count)
 
 	if (!args || !args[0] || !prog_name)
 		return;
+
+	if (handle_builtin_commands(args))
+		return;
+
 	cmd_path = find_command(args[0]);
 	if (!cmd_path)
 	{
