@@ -16,8 +16,8 @@ extern char **environ;
 char *read_line(void);
 void execute_command(char **args, char *prog_name, int count, int *status);
 int handle_builtin_commands(char **args, int *status);
-int _str_to_int(char *str);
-void execute_child_process(char *cmd_path, char **args, char *prog_name, int count);
+void execute_child_process(char *cmd_path, char **args, char *prog_name,
+	int count);
 void handle_execve_error(char *prog_name, int count, char *cmd);
 void print_prompt(void);
 char **parse_line(char *line);
