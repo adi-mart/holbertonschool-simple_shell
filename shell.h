@@ -25,5 +25,6 @@ char *find_command(char *cmd);
 char *_getenv(const char *name);
 void free_args(char **args);
 void handle_exit_command(char **args, char *line);
+void handle_env_command(void);
 
 #endif
