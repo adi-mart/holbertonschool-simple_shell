@@ -7,11 +7,15 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/stat.h>
 
+#define MAX_ARGS 64
 extern char **environ;
 
+
 char *read_line(void);
-void execute_command(char *line, char *prog_name, int count);
+void execute_command(char **args, char *prog_name, int count);
 void print_prompt(void);
+char **parse_line(char *line);
 
 #endif
