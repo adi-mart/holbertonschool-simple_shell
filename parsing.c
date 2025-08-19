@@ -9,7 +9,7 @@ char **parse_line(char *line)
 {
 	char *token, *line_copy;
 	char **args = NULL;
-	size_t bufsize = 8, i = 0;
+	size_t bufsize = 64, i = 0;
 
 	if (!line)
 		return (NULL);
@@ -26,16 +26,9 @@ char **parse_line(char *line)
 	}
 
 	token = strtok(line_copy, " \t\n");
-	while (token)
+	while (token && i < bufsize - 1)
 	{
 		args[i++] = strdup(token);
-		if (i >= bufsize)
-		{
-			bufsize *= 2;
-			args = realloc(args, bufsize * sizeof(char *));
-			if (!args)
-				break;
-		}
 		token = strtok(NULL, " \t\n");
 	}
 	args[i] = NULL;

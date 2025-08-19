@@ -4,12 +4,12 @@
  * main - Entry point of the simple shell
  * @argc: Number of arguments (unused)
  * @argv: Array of arguments
- * Return: 0 on success
+ * Return: The exit status of the last command executed
  */
 int main(int argc, char **argv)
 {
 	char *line, **args;
-	int i, command_count = 1, len, j;
+	int i, command_count = 1, len, j, status = 0;
 	(void)argc;
 
 	while (1)
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 		}
 		args = parse_line(line + i);
 		if (args && args[0])
-			execute_command(args, argv[0], command_count);
+			execute_command(args, argv[0], command_count, &status);
 		if (args)
 		{
 			for (j = 0; args[j]; j++)
@@ -47,5 +47,5 @@ int main(int argc, char **argv)
 		command_count++;
 		free(line);
 	}
-	return (0);
+	return (status);
 }
