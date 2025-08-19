@@ -9,7 +9,6 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-#define MAX_ARGS 64
 extern char **environ;
 
 
