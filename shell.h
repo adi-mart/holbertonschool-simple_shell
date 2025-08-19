@@ -14,7 +14,7 @@ extern char **environ;
 
 
 char *read_line(void);
-void execute_command(char **args, char *prog_name, int count, int *status);
+int execute_command(char **args, char *prog_name, int count, int *status);
 int handle_builtin_commands(char **args, int *status);
 void execute_child_process(char *cmd_path, char **args, char *prog_name,
 	int count);
@@ -23,5 +23,7 @@ void print_prompt(void);
 char **parse_line(char *line);
 char *find_command(char *cmd);
 char *_getenv(const char *name);
+void free_args(char **args);
+void handle_exit_command(char **args, char *line);
 
 #endif

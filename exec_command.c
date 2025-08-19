@@ -12,7 +12,7 @@ int handle_builtin_commands(char **args, int *status)
 
 	if (strcmp(args[0], "exit") == 0)
 	{
-		exit(0);
+		return (1);
 	}
 	return (0);
 }
@@ -58,32 +58,33 @@ void execute_child_process(char *cmd_path, char **args,
  * @prog_name: the name of the shell program
  * @count: The command count for error messages
  * @status: pointer to the shell status
+ * Return: 1 if should exit shell, 0 otherwise
  */
-void execute_command(char **args, char *prog_name, int count, int *status)
+int execute_command(char **args, char *prog_name, int count, int *status)
 {
 	pid_t pid;
 	int child_status;
 	char *cmd_path;
 
 	if (!args || !args[0] || !prog_name)
-		return;
+		return (0);
 
 	if (handle_builtin_commands(args, status))
-		return;
+		return (1);
 
 	cmd_path = find_command(args[0]);
 	if (!cmd_path)
 	{
 		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, args[0]);
 		*status = 127;
-		return;
+		return (0);
 	}
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
 		free(cmd_path);
-		return;
+		return (0);
 	}
 	else if (pid == 0)
 		execute_child_process(cmd_path, args, prog_name, count);
@@ -95,4 +96,5 @@ void execute_command(char **args, char *prog_name, int count, int *status)
 			*status = WEXITSTATUS(child_status);
 	}
 	free(cmd_path);
+	return (0);
 }
