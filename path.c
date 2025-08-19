@@ -1,20 +1,6 @@
 #include "shell.h"
 
 /**
- * get_path_env - Retrieves the PATH environment variable
- * Return: A pointer to the string containing the PATH or NULL on failure
- */
-char *get_path_env(void)
-{
-	char *path = getenv("PATH");
-
-	if (!path)
-		return (NULL);
-
-	return (strdup(path));
-}
-
-/**
  * find_command - Searches for a command in the directories of PATH
  * @cmd: The name of the command to search for
  * Return: The full path of the command or NULL if not found
@@ -29,12 +15,11 @@ char *find_command(char *cmd)
 	if (strchr(cmd, '/'))
 		return (strdup(cmd));
 
-	path = get_path_env();
+	path = getenv("PATH");
 	if (!path)
 		return (NULL);
 
 	path_copy = strdup(path);
-	free(path);
 	if (!path_copy)
 		return (NULL);
 
