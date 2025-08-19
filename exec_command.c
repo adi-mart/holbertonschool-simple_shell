@@ -1,10 +1,24 @@
 #include "shell.h"
 
 /**
- * handle_builtin_commands - Handle built-in commands like exit
+ * handle_env_command - Print all environment variables
+ */
+void handle_env_command(void)
+{
+	int i = 0;
+
+	while (environ[i] != NULL)
+	{
+		printf("%s\n", environ[i]);
+		i++;
+	}
+}
+
+/**
+ * handle_builtin_commands - Handle built-in commands like exit and env
  * @args: Array of command arguments
  * @status: Pointer to shell status (unused for exit)
- * Return: 1 if command was handled, 0 otherwise
+ * Return: 1 if exit command, 2 if env command, 0 otherwise
  */
 int handle_builtin_commands(char **args, int *status)
 {
@@ -13,6 +27,11 @@ int handle_builtin_commands(char **args, int *status)
 	if (strcmp(args[0], "exit") == 0)
 	{
 		return (1);
+	}
+	if (strcmp(args[0], "env") == 0)
+	{
+		handle_env_command();
+		return (2);
 	}
 	return (0);
 }
@@ -65,12 +84,16 @@ int execute_command(char **args, char *prog_name, int count, int *status)
 	pid_t pid;
 	int child_status;
 	char *cmd_path;
+	int builtin_result;
 
 	if (!args || !args[0] || !prog_name)
 		return (0);
 
-	if (handle_builtin_commands(args, status))
+	builtin_result = handle_builtin_commands(args, status);
+	if (builtin_result == 1)
 		return (1);
+	if (builtin_result == 2)
+		return (0);
 
 	cmd_path = find_command(args[0]);
 	if (!cmd_path)
