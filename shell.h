@@ -22,5 +22,6 @@ void handle_execve_error(char *prog_name, int count, char *cmd);
 void print_prompt(void);
 char **parse_line(char *line);
 char *find_command(char *cmd);
+char *_getenv(const char *name);
 
 #endif

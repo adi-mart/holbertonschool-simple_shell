@@ -11,7 +11,7 @@ simple_shell \- un interpréteur de commandes simple
 
 .SH DESCRIPTION
 .B simple_shell
-est un interpréteur de commandes simple écrit en C. Il peut fonctionner en mode interactif ou non-interactif et exécute des commandes en utilisant leur chemin absolu.
+est un interpréteur de commandes simple écrit en C. Il peut fonctionner en mode interactif ou non-interactif et exécute des commandes en utilisant leur chemin absolu ou en les recherchant dans la variable d'environnement PATH.
 
 En mode interactif, le shell affiche un prompt 
 .B ($) 
@@ -22,8 +22,8 @@ Aucune option n'est supportée.
 
 .SH COMMANDES INTÉGRÉES
 .TP
-.B exit
-Quitte le shell avec un statut de sortie 0.
+.B exit [status]
+Quitte le shell avec un statut de sortie spécifié. Si aucun statut n'est fourni, utilise le statut de sortie de la dernière commande exécutée.
 
 .SH FONCTIONNEMENT
 Le shell lit une ligne depuis l'entrée standard, vérifie si c'est la commande 
@@ -33,34 +33,40 @@ Le shell lit une ligne depuis l'entrée standard, vérifie si c'est la commande
 et 
 .BR execve (2).
 
-Les commandes doivent être spécifiées avec leur chemin absolu (par exemple 
+Les commandes peuvent être spécifiées avec leur chemin absolu (par exemple 
 .B /bin/ls
-au lieu de simplement 
+) ou simplement par leur nom (par exemple 
 .B ls
-).
+). Dans ce dernier cas, le shell recherche la commande dans les répertoires listés dans la variable d'environnement 
+.B PATH
+.
 
 .SH GESTION DES ERREURS
 Si une commande n'est pas trouvée, le shell affiche un message d'erreur au format :
 .br
 .B nom_programme: numéro_commande: commande: not found
 
-Le shell retourne le statut de sortie 127 pour les commandes non trouvées.
+Si une commande est trouvée mais n'a pas les permissions d'exécution, le shell affiche :
+.br
+.B nom_programme: numéro_commande: commande: Permission denied
+
+Le shell retourne le statut de sortie 127 pour les commandes non trouvées et 126 pour les erreurs de permission.
 
 .SH EXEMPLES
 Mode interactif :
 .EX
 $ ./hsh
-($) /bin/ls
+($) ls
 shell.c shell.h README.md
-($) /bin/pwd
+($) pwd
 /home/user/simple_shell
-($) exit
+($) exit 42
 $
 .EE
 
 Mode non-interactif :
 .EX
-$ echo "/bin/ls" | ./hsh
+$ echo "ls" | ./hsh
 shell.c shell.h README.md
 $ echo "exit" | ./hsh
 $
@@ -71,6 +77,9 @@ $
 .B 0
 Succès
 .TP
+.B 126
+Permission refusée
+.TP
 .B 127
 Commande non trouvée
 
@@ -78,6 +87,10 @@ Commande non trouvée
 Le shell utilise la variable d'environnement 
 .B environ
 pour passer l'environnement aux commandes exécutées.
+.br
+Le shell utilise également la variable d'environnement 
+.B PATH
+pour rechercher les commandes qui ne sont pas spécifiées avec un chemin absolu.
 
 .SH FICHIERS
 .TP
@@ -91,11 +104,13 @@ Le shell ne supporte pas :
 .br
 \- Les pipes et redirections
 .br
-\- L'expansion des chemins (PATH)
-.br
 \- Les commandes composées
 .br
 \- L'historique des commandes
+.br
+\- Les alias
+.br
+\- Les fonctions shell
 
 .SH AUTEURS
 Aurelie Di Martino <aurelie.di-martino@holbertonstudents.com>
@@ -107,4 +122,6 @@ Mickael Mur <mur.mickael@gmail.com>
 .BR bash (1),
 .BR execve (2),
 .BR fork (2),
-.BR waitpid (2)
+.BR waitpid (2),
+.BR access (2),
+.BR getenv (3)
