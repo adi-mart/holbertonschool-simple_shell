@@ -1,51 +1,18 @@
 #include "shell.h"
 
 /**
- * _str_to_int - Convert string to integer (replacement for atoi)
- * @str: String to convert
- * Return: Integer value or 0 if invalid
- */
-int _str_to_int(char *str)
-{
-	int result = 0, sign = 1, i = 0;
-
-	if (!str)
-		return (0);
-
-	if (str[0] == '-')
-	{
-		sign = -1;
-		i = 1;
-	}
-	else if (str[0] == '+')
-		i = 1;
-
-	while (str[i])
-	{
-		if (str[i] >= '0' && str[i] <= '9')
-			result = result * 10 + (str[i] - '0');
-		else
-			return (0);
-		i++;
-	}
-	return (result * sign);
-}
-
-/**
  * handle_builtin_commands - Handle built-in commands like exit
  * @args: Array of command arguments
- * @status: pointer to the shell status
+ * @status: Pointer to shell status (unused for exit)
  * Return: 1 if command was handled, 0 otherwise
  */
 int handle_builtin_commands(char **args, int *status)
 {
+	(void)status;
+
 	if (strcmp(args[0], "exit") == 0)
 	{
-		if (args[1])
-		{
-			*status = _str_to_int(args[1]);
-		}
-		exit(*status);
+		exit(0);
 	}
 	return (0);
 }
