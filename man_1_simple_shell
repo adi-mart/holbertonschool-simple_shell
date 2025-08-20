@@ -1,123 +1,129 @@
 .\" Man page for simple_shell
-.TH SIMPLE_SHELL 1 "17 August 2025" "1.0" "simple_shell manual"
+.TH SIMPLE_SHELL 1 "20 August 2025" "1.0" "simple_shell manual"
 
 .SH NAME
-simple_shell \- un interpréteur de commandes simple
+simple_shell \- a simple command line interpreter
 
 .SH SYNOPSIS
 .B ./hsh
 .br
-.B echo "commande" | ./hsh
+.B echo "command" | ./hsh
 
 .SH DESCRIPTION
 .B simple_shell
-est un interpréteur de commandes simple écrit en C. Il peut fonctionner en mode interactif ou non-interactif et exécute des commandes en utilisant leur chemin absolu ou en les recherchant dans la variable d'environnement PATH.
+is a simple command line interpreter written in C. It can operate in both interactive and non-interactive modes and executes commands using their absolute path or by searching for them in the PATH environment variable.
 
-En mode interactif, le shell affiche un prompt 
+In interactive mode, the shell displays a prompt 
 .B ($) 
-et attend que l'utilisateur saisisse une commande. En mode non-interactif, le shell lit les commandes depuis l'entrée standard.
+and waits for the user to enter a command. In non-interactive mode, the shell reads commands from standard input.
 
 .SH OPTIONS
-Aucune option n'est supportée.
+No options are supported.
 
-.SH COMMANDES INTÉGRÉES
+.SH BUILT-IN COMMANDS
 .TP
 .B exit [status]
-Quitte le shell avec un statut de sortie spécifié. Si aucun statut n'est fourni, utilise le statut de sortie de la dernière commande exécutée.
+Exits the shell with a specified exit status. If no status is provided, uses the exit status of the last executed command.
+.TP
+.B env
+Prints the current environment variables.
 
-.SH FONCTIONNEMENT
-Le shell lit une ligne depuis l'entrée standard, vérifie si c'est la commande 
+.SH OPERATION
+The shell reads a line from standard input, checks if it's the 
 .B exit
-, et si ce n'est pas le cas, tente d'exécuter la commande en utilisant 
+command, and if not, attempts to execute the command using 
 .BR fork (2)
-et 
+and 
 .BR execve (2).
 
-Les commandes peuvent être spécifiées avec leur chemin absolu (par exemple 
+Commands can be specified with their absolute path (e.g., 
 .B /bin/ls
-) ou simplement par leur nom (par exemple 
+) or simply by their name (e.g., 
 .B ls
-). Dans ce dernier cas, le shell recherche la commande dans les répertoires listés dans la variable d'environnement 
+). In the latter case, the shell searches for the command in the directories listed in the 
 .B PATH
-.
+environment variable.
 
-.SH GESTION DES ERREURS
-Si une commande n'est pas trouvée, le shell affiche un message d'erreur au format :
+.SH ERROR HANDLING
+If a command is not found, the shell displays an error message in the format:
 .br
-.B nom_programme: numéro_commande: commande: not found
+.B program_name: command_number: command: not found
 
-Si une commande est trouvée mais n'a pas les permissions d'exécution, le shell affiche :
+If a command is found but doesn't have execution permissions, the shell displays:
 .br
-.B nom_programme: numéro_commande: commande: Permission denied
+.B program_name: command_number: command: Permission denied
 
-Le shell retourne le statut de sortie 127 pour les commandes non trouvées et 126 pour les erreurs de permission.
+The shell returns exit status 127 for commands not found and 126 for permission errors.
 
-.SH EXEMPLES
-Mode interactif :
+.SH EXAMPLES
+Interactive mode:
 .EX
 $ ./hsh
-($) ls
-shell.c shell.h README.md
-($) pwd
+($) /bin/ls
+shell.c shell.h README.md AUTHORS
+($) /bin/pwd
 /home/user/simple_shell
+($) env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOME=/home/user
 ($) exit 42
 $
 .EE
 
-Mode non-interactif :
+Non-interactive mode:
 .EX
-$ echo "ls" | ./hsh
-shell.c shell.h README.md
+$ echo "/bin/ls" | ./hsh
+shell.c shell.h README.md AUTHORS
 $ echo "exit" | ./hsh
 $
 .EE
 
-.SH CODES DE SORTIE
+.SH EXIT STATUS
 .TP
 .B 0
-Succès
+Success
 .TP
 .B 126
-Permission refusée
+Permission denied
 .TP
 .B 127
-Commande non trouvée
+Command not found
 
-.SH ENVIRONNEMENT
-Le shell utilise la variable d'environnement 
+.SH ENVIRONMENT
+The shell uses the 
 .B environ
-pour passer l'environnement aux commandes exécutées.
+environment variable to pass the environment to executed commands.
 .br
-Le shell utilise également la variable d'environnement 
+The shell also uses the 
 .B PATH
-pour rechercher les commandes qui ne sont pas spécifiées avec un chemin absolu.
+environment variable to search for commands that are not specified with an absolute path.
 
-.SH FICHIERS
+.SH FILES
 .TP
 .B ./hsh
-L'exécutable du shell
+The shell executable
 
 .SH BUGS
-Le shell ne supporte pas :
+The shell does not support:
 .br
-\- Les variables d'environnement dans les commandes
+\- Environment variables in commands
 .br
-\- Les pipes et redirections
+\- Pipes and redirections
 .br
-\- Les commandes composées
+\- Compound commands
 .br
-\- L'historique des commandes
+\- Command history
 .br
-\- Les alias
+\- Aliases
 .br
-\- Les fonctions shell
+\- Shell functions
 
-.SH AUTEURS
+.SH AUTHORS
 Aurelie Di Martino <aurelie.di-martino@holbertonstudents.com>
 .br
 Mickael Mur <mur.mickael@gmail.com>
 
-.SH VOIR AUSSI
+.SH SEE ALSO
 .BR sh (1),
 .BR bash (1),
 .BR execve (2),
