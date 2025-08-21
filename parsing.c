@@ -1,9 +1,9 @@
 #include "shell.h"
 
 /**
- * parse_line - Découpe la ligne en tokens (arguments)
- * @line: La ligne de commande à parser
- * Return: Un tableau de pointeurs vers les arguments (à free après usage)
+ * parse_line - Splits the line into tokens (arguments)
+ * @line: The command line to parse
+ * Return: An array of pointers to the arguments (to be freed after use)
  */
 char **parse_line(char *line)
 {
