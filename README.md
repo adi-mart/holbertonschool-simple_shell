@@ -136,7 +136,7 @@ img/man_1_simple_shell.png
 
 ## Flowchart du processus
 
-IMAGE
+![IMAGE](<img/Flowchart simple shell.png>)
 
 
 Étapes principales :
@@ -295,7 +295,7 @@ echo "/bin/ls" | valgrind --leak-check=full ./hsh
 
 ## Process Flowchart
 
-IMAGE
+![IMAGE](<img/Flowchart simple shell.png>)
 
 Main steps:
 1. **Initialization** : Shell startup and prompt display
