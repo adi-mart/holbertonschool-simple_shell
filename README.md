@@ -57,11 +57,10 @@ echo "pwd" | ./hsh
 ├── img/                # Ressources visuelles et documentation
 ├── shell.h             # Fichier d'en-tête principal
 ├── shell.c             # Point d'entrée et boucle principale
-├── parsing.c           # Parsing des commandes et arguments
 ├── path.c              # Gestion du PATH et recherche d'exécutables
 ├── exec_command.c      # Exécution des commandes
-├── builtins.c          # Implémentation des commandes intégrées
-└── read_line.c         # Lecture et traitement des entrées utilisateur
+├── handle_builtins.c   # Gestion des commandes intégrées
+└── handle_input.c      # Lecture et parsing des entrées utilisateur (inclut le parsing)
 ```
 
 ## Commandes supportées
@@ -85,7 +84,7 @@ Le shell peut exécuter :
 ```bash
 $ ./hsh
 ($) ls
-AUTHORS  README.md  builtins.c  exec_command.c  img  man_1_simple_shell  parsing.c  path.c  read_line.c  shell.c  shell.h
+AUTHORS  README.md  exec_command.c  handle_builtins.c  handle_input.c  img  man_1_simple_shell  path.c  shell.c  shell.h
 ($) /bin/pwd
 /home/user/holbertonschool-simple_shell
 ($) whoami
@@ -218,11 +217,10 @@ echo "pwd" | ./hsh
 ├── img/                # Visual resources and documentation
 ├── shell.h             # Main header file
 ├── shell.c             # Main entry point and processing loop
-├── parsing.c           # Command and argument parsing
 ├── path.c              # PATH management and executable search
 ├── exec_command.c      # Command execution
-├── builtins.c          # Built-in command implementation
-└── read_line.c         # User input reading and processing
+├── handle_builtins.c   # Built-in command handling
+└── handle_input.c      # User input reading and parsing (includes parsing)
 ```
 
 ## Supported Commands
@@ -244,7 +242,7 @@ The shell can execute:
 ```bash
 $ ./hsh
 ($) ls
-AUTHORS  README.md  builtins.c  exec_command.c  img  man_1_simple_shell  parsing.c  path.c  read_line.c  shell.c  shell.h
+AUTHORS  README.md  exec_command.c  handle_builtins.c  handle_input.c  img  man_1_simple_shell  path.c  shell.c  shell.h
 ($) /bin/pwd
 /home/user/holbertonschool-simple_shell
 ($) whoami

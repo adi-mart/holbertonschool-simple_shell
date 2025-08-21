@@ -1,33 +1,6 @@
 #include "shell.h"
 
 /**
- * free_args - Free the array of arguments
- * @args: Array of arguments to free
- */
-void free_args(char **args)
-{
-	int j;
-
-	if (args)
-	{
-		for (j = 0; args[j]; j++)
-			free(args[j]);
-		free(args);
-	}
-}
-
-/**
- * handle_exit_command - Handle exit command cleanup
- * @args: Array of arguments
- * @line: Command line to free
- */
-void handle_exit_command(char **args, char *line)
-{
-	free_args(args);
-	free(line);
-}
-
-/**
  * main - Entry point of the simple shell
  * @argc: Number of arguments (unused)
  * @argv: Array of arguments
