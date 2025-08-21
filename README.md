@@ -131,12 +131,12 @@ Le shell a été testé pour :
 
 ## Manuel (man page)
 
-img/man_1_simple_shell.png
+![alt text](img/man_1_simple_shell.png)
 
 
 ## Flowchart du processus
 
-![IMAGE](<img/Flowchart simple shell.png>)
+![alt text](img/Flowchart_simple_shell.png)
 
 
 Étapes principales :
@@ -295,7 +295,7 @@ echo "/bin/ls" | valgrind --leak-check=full ./hsh
 
 ## Process Flowchart
 
-![IMAGE](<img/Flowchart simple shell.png>)
+![alt text](img/Flowchart_simple_shell.png)
 
 Main steps:
 1. **Initialization** : Shell startup and prompt display
