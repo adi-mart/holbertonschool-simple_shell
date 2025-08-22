@@ -1,27 +1,6 @@
 #include "shell.h"
 
 /**
- * handle_execve_error - Handles execve errors and exits with appropriate code
- * @prog_name: the name of the shell program
- * @count: The command count for error messages
- * @cmd: The command that failed
- */
-void handle_execve_error(char *prog_name, int count, char *cmd)
-{
-	if (errno == EACCES)
-	{
-		fprintf(stderr, "%s: %d: %s: Permission denied\n",
-			prog_name, count, cmd);
-		exit(126);
-	}
-	else
-	{
-		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, cmd);
-		exit(127);
-	}
-}
-
-/**
  * execute_child_process - Executes command in child process
  * @cmd_path: Path to the command to execute
  * @args: Array of arguments

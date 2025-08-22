@@ -17,17 +17,6 @@ void free_args(char **args)
 }
 
 /**
- * handle_exit_command - Handle exit command cleanup
- * @args: Array of arguments
- * @line: Command line to free
- */
-void handle_exit_command(char **args, char *line)
-{
-	free_args(args);
-	free(line);
-}
-
-/**
  * main - Entry point of the simple shell
  * @argc: Number of arguments (unused)
  * @argv: Array of arguments

@@ -57,11 +57,11 @@ echo "pwd" | ./hsh
 ├── img/                # Ressources visuelles et documentation
 ├── shell.h             # Fichier d'en-tête principal
 ├── shell.c             # Point d'entrée et boucle principale
-├── parsing.c           # Parsing des commandes et arguments
+├── handle_input.c      # Parsing des commandes et lecture des entrées
 ├── path.c              # Gestion du PATH et recherche d'exécutables
 ├── exec_command.c      # Exécution des commandes
-├── builtins.c          # Implémentation des commandes intégrées
-└── read_line.c         # Lecture et traitement des entrées utilisateur
+├── handle_builtins.c   # Implémentation des commandes intégrées
+└── hsh                 # Exécutable compilé du shell
 ```
 
 ## Commandes supportées
@@ -85,7 +85,7 @@ Le shell peut exécuter :
 ```bash
 $ ./hsh
 ($) ls
-AUTHORS  README.md  builtins.c  exec_command.c  img  man_1_simple_shell  parsing.c  path.c  read_line.c  shell.c  shell.h
+AUTHORS  README.md  exec_command.c  handle_builtins.c  handle_input.c  hsh  img  man_1_simple_shell  path.c  shell.c  shell.h
 ($) /bin/pwd
 /home/user/holbertonschool-simple_shell
 ($) whoami
@@ -103,10 +103,47 @@ $
 Pour vérifier les fuites mémoire avec Valgrind :
 
 ### Test complet des fuites mémoire
+```bash
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./hsh
+```
 
 ### Test en mode non-interactif
+```bash
 echo "/bin/ls" | valgrind --leak-check=full ./hsh
+```
+
+## Architecture et fonctionnalités avancées
+
+### Gestion de la mémoire
+- Allocation dynamique sécurisée avec vérification d'erreurs
+- Libération systématique de toute mémoire allouée
+- Prévention des fuites mémoire et double-free
+- Gestion robuste des échecs d'allocation
+
+### Fonctions principales par module
+
+**`shell.c`** - Boucle principale et gestion globale
+- `main()` : Point d'entrée et boucle interactive
+- `free_args()` : Libération sécurisée des arguments
+
+**`handle_input.c`** - Gestion des entrées utilisateur
+- `print_prompt()` : Affichage du prompt en mode interactif
+- `read_line()` : Lecture robuste avec getline()
+- `parse_line()` : Tokenisation et parsing des commandes
+
+**`exec_command.c`** - Exécution des commandes
+- `execute_command()` : Gestion complète fork/exec/wait
+- `execute_child_process()` : Exécution dans le processus enfant
+
+**`handle_builtins.c`** - Commandes intégrées
+- `handle_builtin_commands()` : Détection et routage des builtins
+- `handle_env_command()` : Affichage des variables d'environnement
+- `handle_execve_error()` : Gestion spécialisée des erreurs d'exécution
+- `handle_exit_command()` : Gestion de la commande exit et nettoyage
+
+**`path.c`** - Résolution des chemins
+- `find_command()` : Recherche dans PATH avec optimisations
+- `_getenv()` : Implémentation personnalisée de getenv()
 
 
 ## Gestion des erreurs
@@ -218,11 +255,11 @@ echo "pwd" | ./hsh
 ├── img/                # Visual resources and documentation
 ├── shell.h             # Main header file
 ├── shell.c             # Main entry point and processing loop
-├── parsing.c           # Command and argument parsing
+├── handle_input.c      # Command parsing and input reading
 ├── path.c              # PATH management and executable search
 ├── exec_command.c      # Command execution
-├── builtins.c          # Built-in command implementation
-└── read_line.c         # User input reading and processing
+├── handle_builtins.c   # Built-in command implementation
+└── hsh                 # Compiled shell executable
 ```
 
 ## Supported Commands
@@ -244,7 +281,7 @@ The shell can execute:
 ```bash
 $ ./hsh
 ($) ls
-AUTHORS  README.md  builtins.c  exec_command.c  img  man_1_simple_shell  parsing.c  path.c  read_line.c  shell.c  shell.h
+AUTHORS  README.md  exec_command.c  handle_builtins.c  handle_input.c  hsh  img  man_1_simple_shell  path.c  shell.c  shell.h
 ($) /bin/pwd
 /home/user/holbertonschool-simple_shell
 ($) whoami
@@ -282,10 +319,47 @@ The shell has been tested for:
 To check for memory leaks with Valgrind:
 
 ### Complete memory leak test
+```bash
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./hsh
+```
 
 ### Non-interactive mode test
+```bash
 echo "/bin/ls" | valgrind --leak-check=full ./hsh
+```
+
+## Architecture and Advanced Features
+
+### Memory Management
+- Secure dynamic allocation with error checking
+- Systematic deallocation of all allocated memory
+- Prevention of memory leaks and double-free
+- Robust handling of allocation failures
+
+### Main Functions by Module
+
+**`shell.c`** - Main loop and global management
+- `main()` : Entry point and interactive loop
+- `free_args()` : Secure argument deallocation
+
+**`handle_input.c`** - User input management
+- `print_prompt()` : Prompt display in interactive mode
+- `read_line()` : Robust reading with getline()
+- `parse_line()` : Command tokenization and parsing
+
+**`exec_command.c`** - Command execution
+- `execute_command()` : Complete fork/exec/wait management
+- `execute_child_process()` : Execution in child process
+
+**`handle_builtins.c`** - Built-in commands
+- `handle_builtin_commands()` : Builtin detection and routing
+- `handle_env_command()` : Environment variable display
+- `handle_execve_error()` : Specialized execution error handling
+- `handle_exit_command()` : Exit command handling and cleanup
+
+**`path.c`** - Path resolution
+- `find_command()` : PATH search with optimizations
+- `_getenv()` : Custom getenv() implementation
 
 
 ## Manual (man page)
